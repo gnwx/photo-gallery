@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useUpload from "../hooks/useUpload";
-import { Button, Input, useDisclosure } from "@chakra-ui/react";
-
+import { Button, useDisclosure } from "@chakra-ui/react";
+import { customTheme } from "../helpers/theme";
 import {
   Modal,
   ModalOverlay,
@@ -11,6 +11,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import { AddIcon, AttachmentIcon } from "@chakra-ui/icons";
 const UploadButton = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -28,23 +29,38 @@ const UploadButton = () => {
   };
   return (
     <>
-      <Button onClick={onOpen}>Upload Image</Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Button onClick={onOpen} leftIcon={<AddIcon />} colorScheme="brand">
+        Add Image
+      </Button>
+      <Modal theme={customTheme} isOpen={isOpen} onClose={onClose}>
         <form onSubmit={handleUpload}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Upload Image</ModalHeader>
+            <ModalHeader color="brand.600">Upload Image</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Input
+              <Button
+                as="label"
+                htmlFor="file-input"
+                leftIcon={<AttachmentIcon />}
+                colorScheme="brand"
+                variant="outline"
+              >
+                Upload File
+              </Button>
+              <input
+                id="file-input"
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleChange(e)}
+                style={{ display: "none" }}
               />
             </ModalBody>
             <ModalFooter gap={3}>
-              <Button type="submit">Upload</Button>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
+              <Button type="submit" color="brand.900">
+                Upload
+              </Button>
+              <Button colorScheme="brand" mr={3} onClick={onClose}>
                 Close
               </Button>
             </ModalFooter>

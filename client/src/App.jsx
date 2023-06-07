@@ -4,24 +4,27 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import UploadButton from "./components/UploadButton";
 import useAuthContext from "./hooks/useAuthContext";
-import { Container } from "@chakra-ui/react";
+import { Box, Container, Stack } from "@chakra-ui/react";
+import UserCard from "./components/UserCard";
 function App() {
   const [isLogin, setIsLogin] = useState(true);
   const { user } = useAuthContext();
   return (
-    <Container sx={{}}>
+    <Container sx={{ display: "flex", justifyContent: "center", mt: 40 }}>
       {!user && (
         <>
-          <Login setIsLogin={setIsLogin} />
-
-          <Register setIsLogin={setIsLogin} />
+          {isLogin && <Login setIsLogin={setIsLogin} />}
+          {!isLogin && <Register setIsLogin={setIsLogin} />}
         </>
       )}
       {user && (
-        <>
-          <UploadButton />
+        <Box>
+          <Stack direction="row" alignItems="center" justifyContent="center">
+            <UserCard />
+            <UploadButton />
+          </Stack>
           <ImageLayout />
-        </>
+        </Box>
       )}
     </Container>
   );

@@ -11,7 +11,7 @@ const ImageLayout = () => {
   }, []);
 
   return (
-    <Box>
+    <Box sx={{ mt: 20 }}>
       {isLoading && <CircularProgress />}
       {images.length === 0 && <div>There is no image to show</div>}
 
