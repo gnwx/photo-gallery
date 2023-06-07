@@ -4,20 +4,26 @@ export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  console.log(user);
   const setLogin = (data) => {
     setUser(data.user);
     sessionStorage.setItem("JWT", data.token);
+    sessionStorage.setItem("user_name", data.user.name);
   };
-  const values = { setLogin, user };
 
+  const logOut = () => {
+    setUser(null);
+    sessionStorage.clear();
+  };
   useEffect(() => {
     if (!user) {
       const session = sessionStorage.getItem("JWT");
-      if (session) {
-        setUser(session);
+      const name = sessionStorage.getItem("user_name");
+
+      if (session && name) {
+        setUser({ name, token: session });
       }
     }
   }, []);
+  const values = { setLogin, user, logOut };
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 };
