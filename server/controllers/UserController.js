@@ -8,13 +8,11 @@ const login = async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = createToken(user._id, email);
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          user: { name: user.name, id: user._id },
-          token,
-        });
+      res.status(200).json({
+        success: true,
+        user: { name: user.name, id: user._id },
+        token,
+      });
     } else {
       res
         .status(401)
@@ -22,7 +20,7 @@ const login = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ success: false, error: error.message });
   }
 };
 
@@ -32,13 +30,13 @@ const signIn = async (req, res) => {
   try {
     const ifExists = await UserModel.findOne({ email });
     if (ifExists) {
-      return res
-        .status(409)
-        .json({ message: "With that email a user already registered." });
+      return res.status(409).json({
+        success: false,
+        message: "User with that email already exists.",
+      });
     }
 
     const salt = await bcrypt.genSalt(10);
-    2;
     const hashedPass = await bcrypt.hash(password, salt);
     await UserModel.create({
       name,
@@ -48,10 +46,14 @@ const signIn = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "User created succesfully!",
+      message: "User registered successfully!",
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred during sign up. Please try again.",
+    });
   }
 };
 

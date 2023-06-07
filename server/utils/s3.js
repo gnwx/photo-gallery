@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 const ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 const ACCESS_KEY_SECRET = process.env.AWS_ACCESS_KEY_SECRET;
+
 const REGION = process.AWS_REGION;
 
 const s3 = new S3Client({
@@ -32,7 +33,7 @@ export const uploadToS3 = async ({ file, userId }) => {
 
   try {
     await s3.send(command);
-    return { key };
+    return { message: "Image uploaded succesfully!" };
   } catch (err) {
     console.log(err);
     return { err };
@@ -44,10 +45,12 @@ const getImageKeysByUser = async (userId) => {
     Bucket: BUCKET_NAME,
     Prefix: userId,
   });
-
-  const { Contents = [] } = await s3.send(command);
-
-  return Contents.map((content) => content.Key);
+  try {
+    const { Contents = [] } = await s3.send(command);
+    return Contents.map((content) => content.Key);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getUserPresignedUrls = async (userId) => {
